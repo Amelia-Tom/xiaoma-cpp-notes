@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C++ 笔记 · 少儿编程入门</title>
+<meta name="description" content="给孩子的 C++ 入门笔记：10 章系统课程、代码示例、随堂测验与动手练习。深色、克制、专注阅读。">
+<meta name="theme-color" content="#141617">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+  // 在样式加载前确定外观，避免闪烁；默认深色
+  (function () {
+    try {
+      var mode = localStorage.getItem('cppnotes.theme') || 'dark';
+      var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+    } catch (e) {
+      document.documentElement.dataset.theme = 'dark';
+    }
+  })();
+</script>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/home" data-home aria-label="回到首页">
+      <span class="brand-mark">C++</span>
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span class="brand-name">少儿编程笔记</span>
+    </a>
+
+    <nav class="topnav" aria-label="主导航">
+      <a class="nav-link is-active" href="#/home" data-home>首页</a>
+      <a class="nav-link" href="#/home" data-home-section="catalog">课程目录</a>
+      <a class="nav-link" href="#/home" data-home-section="progress">学习进度</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <button class="search-pill" id="headerSearch" type="button" aria-label="搜索章节">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="5.75"/><path d="M15 15L20 20"/>
+        </svg>
+        <span class="search-pill-text">搜索章节</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <button class="icon-btn theme-btn" id="themeBtn" type="button" title="切换外观" aria-label="切换外观">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M20.5 14.2A8.6 8.6 0 0 1 9.8 3.5a8.6 8.6 0 1 0 10.7 10.7z"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="printBtn" type="button" title="打印当前页面" aria-label="打印当前页面">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9V4h12v5"/><path d="M6 17H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v6H6z"/><circle cx="18" cy="11.5" r="1"/>
+        </svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" title="打开课程目录" aria-label="打开课程目录">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="app-shell" id="shell">
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="rail-head">
+      <div class="rail-heading">
+        <span class="rail-eyebrow">COURSE</span>
+        <span class="rail-title">课程目录</span>
+        <span class="sidebar-count">10 章</span>
+      </div>
+      <div class="rail-buttons">
+        <button class="rail-toggle" id="railToggle" type="button" title="收起目录" aria-label="收起目录">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 12h16"/><path d="m14 6-6 6 6 6"/>
+          </svg>
+        </button>
+        <button class="rail-close" id="sidebarClose" type="button" aria-label="关闭目录">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-field">
+      <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="5.75"/><path d="M15 15L20 20"/>
+      </svg>
+      <input id="searchInput" type="search" placeholder="搜索章节或知识点" autocomplete="off" spellcheck="false" aria-label="搜索章节">
+      <span class="search-kbd">⌘K</span>
+    </div>
+
+    <nav class="chapter-list" id="chapterList" aria-label="章节目录"></nav>
+
+    <div class="rail-foot">
+      <div class="rail-progress">
+        <div class="rail-progress-head">
+          <span>学习进度</span>
+          <span class="progress-num" id="progressText">0 / 10</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="appearance">
+        <span class="appearance-label">外观</span>
+        <div class="segmented" id="appearanceSeg" role="radiogroup" aria-label="外观模式">
+          <button type="button" data-mode="auto" role="radio" aria-checked="false">自动</button>
+          <button type="button" data-mode="light" role="radio" aria-checked="false">浅色</button>
+          <button type="button" data-mode="dark" role="radio" aria-checked="true">深色</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+  <main class="main" id="main">
+    <div class="reader" id="reader"></div>
+    <noscript>
+      <div class="reader"><p class="block-p">这份笔记需要开启 JavaScript 才能阅读。请在浏览器设置中允许 JavaScript 后刷新页面。</p></div>
+    </noscript>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <span class="footer-brand">C++ 笔记 · 少儿编程入门</span>
+    <span class="footer-note">双击打开即可阅读 · 学习进度自动保存在本机</span>
+    <a class="footer-link" href="#/hello-world">从第一章开始 →</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/course.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
